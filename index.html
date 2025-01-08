@@ -1,87 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bible App</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet"> 
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bible App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="container">
-        <div class="top-bar"> 
-            <button id="dailyDevotionalButton">Daily Devotional</button>
-            <h1><span class="bible">Bible</span> <span class="app">App</span></h1>
-            <button id="darkModeToggle">Dark Mode</button> 
-        </div>
-
-        <div class="top-buttons">
-            <div class="pills-container">
-                <div class="pill" id="combinedPill">
-                    <span id="bookPill" data-value="John">
-                        <select id="bookSelect"></select>
-                    </span>
-                    <span id="chapterPill" data-value="3">
-                        <select id="chapterSelect"></select>
-                    </span>
-                    <span id="versionPill" data-value="KJV">
-                        <select id="versionSelectTop">
-                            <option value="KJV">KJV</option>
-                            <option value="ASV">ASV</option>
-                            <option value="WEB">WEB</option>
-                            </select>
-                    </span>
-                </div>
-            </div>
-            <p class="instruction-text">Select a Bible book to read from the tabs on left or search for one below!</p>
-            <div class="font-buttons">
-                <button id="decreaseFont">-</button>
-                <button id="increaseFont">+</button>
-            </div>
-        </div>
-
-        <div class="search-container"> 
-            <input type="text" id="questionInput" placeholder="Enter Bible Book, Chapter, Verse, or multiple verses separated by ';'. (e.g., John, Mark 5:6; Romans 8:28-31)"> 
-            <button id="searchButton">Search</button>
-        </div> 
-
-        <div class="chapter-navigation">
-            <button id="copySelectedTop">Copy Selected Verse</button> 
-            <button id="shareSelectedTop">Share Selected Verse</button> 
-            <button id="prevChapterTop">Previous Chapter</button> 
-            <button id="nextChapterTop">Next Chapter</button>
-            <div id="shareOptionsTop" class="share-options" style="display: none;"> 
-                <a href="#" id="shareFacebookTop" onclick="shareOnFacebook()">Facebook</a> |
-                <a href="#" id="shareXTop">X</a> |
-                <a href="#" id="shareRedditTop">Reddit</a> |
-                <a href="#" id="shareGoogleDocsTop">Google Docs</a> |
-                <a href="#" id="shareWordTop">Word</a> |
-                <a href="#" id="shareEmailTop">Email</a> |
-                <a href="#" id="shareTextTop">Text</a> 
-            </div>
-        </div>
-
-        <div id="answerDisplay"></div>
-
-        <div class="chapter-navigation">
-            <button id="copySelected">Copy Selected Verse</button>
-            <button id="shareSelected">Share Selected Verse</button> 
-            <button id="prevChapter">Previous Chapter</button> 
-            <button id="nextChapter">Next Chapter</button>
-            <div id="shareOptions" class="share-options" style="display: none;"> 
-                <a href="#" id="shareFacebook" onclick="shareOnFacebook()">Facebook</a> |
-                <a href="#" id="shareX">X</a> | 
-                <a href="#" id="shareReddit">Reddit</a> |
-                <a href="#" id="shareGoogleDocs">Google Docs</a> |
-                <a href="#" id="shareWord">Word</a> |
-                <a href="#" id="shareEmail">Email</a> |
-                <a href="#" id="shareText">Text</a> 
-            </div>
-        </div>
-
+  <div class="container">
+    <div class="top-bar">
+      <button id="dailyDevotionalButton">Daily Devotional</button>
+      <h1><span class="bible">Bible</span> <span class="app">App</span></h1>
+      <button id="darkModeToggle">Dark Mode</button>
     </div>
-    <script src="script.js"></script> 
+
+    <div class="top-buttons">
+      <div class="pills-container">
+        <div class="pill" id="combinedPill">
+          <span id="bookPill" data-value="John">
+            <select id="bookSelect"></select>
+          </span>
+          <span id="chapterPill" data-value="3">
+            <select id="chapterSelect"></select>
+          </span>
+          <span id="versionPill" data-value="KJV">
+            <select id="versionSelectTop">
+              <option value="KJV">KJV</option>
+              <option value="ASV">ASV</option>
+              <option value="WEB">WEB</option>
+            </select>
+          </span>
+        </div>
+      </div>
+      <p class="instruction-text">Select a Bible book to read from the tabs on left or search for one below!</p>
+      <div class="font-buttons">
+        <button id="decreaseFont">-</button>
+        <button id="increaseFont">+</button>
+      </div>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="questionInput"
+        placeholder="Enter Bible Book, Chapter, Verse, or multiple verses separated by ';'. (e.g., John, Mark 5:6; Romans 8:28-31)">
+      <button id="searchButton">Search</button>
+    </div>
+
+    <div class="chapter-navigation">
+      <button id="copySelectedTop">Copy Selected Verse</button>
+      <button id="shareSelectedTop">Share Selected Verse</button>
+      <button id="prevChapterTop">Previous Chapter</button>
+      <button id="nextChapterTop">Next Chapter</button>
+      <div id="shareOptionsTop" class="share-options" style="display: none;">
+        <a href="#" id="shareFacebookTop">Facebook</a> |
+        <a href="#" id="shareXTop">X</a> |
+        <a href="#" id="shareRedditTop">Reddit</a> |
+        <a href="#" id="shareGoogleDocsTop">Google Docs</a> |
+        <a href="#" id="shareWordTop">Word</a> |
+        <a href="#" id="shareEmailTop">Email</a> |
+        <a href="#" id="shareTextTop">Text</a>
+      </div>
+    </div>
+
+    <div id="answerDisplay"></div>
+
+    <div class="chapter-navigation">
+      <button id="copySelected">Copy Selected Verse</button>
+      <button id="shareSelected">Share Selected Verse</button>
+      <button id="prevChapter">Previous Chapter</button>
+      <button id="nextChapter">Next Chapter</button>
+      <div id="shareOptions" class="share-options" style="display: none;">
+        <a href="#" id="shareFacebook">Facebook</a> |
+        <a href="#" id="shareX">X</a> |
+        <a href="#" id="shareReddit">Reddit</a> |
+        <a href="#" id="shareGoogleDocs">Google Docs</a> |
+        <a href="#" id="shareWord">Word</a> |
+        <a href="#" id="shareEmail">Email</a> |
+        <a href="#" id="shareText">Text</a>
+      </div>
+    </div>
+
+    <div class="top-buttons devotional-elements" style="display: none;">
+      <div class="date-pill">
+        <select id="monthSelect">
+          <option value="1">Jan</option>
+          <option value="2">Feb</option>
+          <option value="3">Mar</option>
+          <option value="4">Apr</option>
+          <option value="5">May</option>
+          <option value="6">Jun</option>
+          <option value="7">Jul</option>
+          <option value="8">Aug</option>
+          <option value="9">Sep</option>
+          <option value="10">Oct</option>
+          <option value="11">Nov</option>
+          <option value="12">Dec</option>
+        </select>
+        /
+        <select id="daySelect"></select>
+        /
+        <span id="yearDisplay"></span>
+      </div>
+      <p id="welcomeMessage">Welcome, hope you are blessed by your reading today! In Jesus' name I pray. Amen!</p>
+      <div class="font-buttons">
+        <button id="decreaseFont">-</button>
+        <button id="increaseFont">+</button>
+      </div>
+    </div>
+
+    <div class="top-buttons devotional-elements" style="display: none;">
+      <button id="audioButton">Audio</button>
+    </div>
+
+    <nav aria-label="Main Navigation" class="devotional-elements" style="display: none;">
+      <div class="chapter-navigation">
+        <button id="podcastsButton">Podcasts</button>
+        <button id="shareButton">Share</button>
+        <button id="prevDevotional">Prior Day</button>
+        <button id="nextDevotional">Next Day</button>
+      </div>
+
+      <div id="devotionalText"></div>
+
+      <div class="chapter-navigation">
+        <button id="podcastsButtonBottom" aria-label="Go to Podcasts">Podcasts</button>
+        <button id="shareButtonBottom" aria-label="Share devotional">Share</button>
+        <button id="prevDevotionalBottom" aria-label="Go to previous day's devotional">Prior Day</button>
+        <button id="nextDevotionalBottom" aria-label="Go to next day's devotional">Next Day</button>
+      </div>
+    </nav>
+
+    <div class="search-container devotional-elements" style="display: none;">
+      <input type="text" id="searchInput"
+        placeholder="Search the Bible using the Bible App (e.g., Mark; John 3:16; Rom 8:28-31)">
+      <button id="searchButton">Search</button>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
 </body>
+
 </html>
