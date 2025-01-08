@@ -52,7 +52,7 @@ dailyDevotionalButton.addEventListener('click', () => {
 
   // 3. Update button text and functionality
   dailyDevotionalButton.style.display = 'none';
-  bibleAppButton.style.display = 'block';
+  bibleAppButton.style.display = 'inline-block'; // Make the Bible App button visible 
 
   // 4. Fetch and display initial devotional
   fetchDevotional();
@@ -75,8 +75,8 @@ bibleAppButton.addEventListener('click', () => {
   answerDisplay.style.display = 'block';
 
   // 3. Update button text and functionality
-  bibleAppButton.style.display = 'none';
-  dailyDevotionalButton.style.display = 'block';
+  bibleAppButton.style.display = 'none'; 
+  dailyDevotionalButton.style.display = 'inline-block'; // Make the Daily Devotional button visible
 });
 
 // --- Dark Mode Toggle Button ---
@@ -89,7 +89,18 @@ monthSelect.addEventListener('change', fetchDevotional);
 
 // --- Day Select ---
 function populateDaySelect() {
-  // ... (same as before) ...
+  const month = monthSelect.value;
+  const year = new Date().getFullYear();
+  const daysInMonth = new Date(year, month, 0).getDate(); 
+
+  daySelect.innerHTML = ''; // Clear existing options
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    const option = document.createElement('option');
+    option.value = i;
+    option.text = i;
+    daySelect.appendChild(option);
+  }
 }
 
 populateDaySelect(); 
@@ -149,7 +160,23 @@ searchButton.addEventListener('click', () => {
 // --- Helper Functions ---
 
 function fetchDevotional() {
-  // ... (same as before) ... 
+  const month = monthSelect.value;
+  const day = daySelect.value;
+
+  // Construct the file path based on the selected date
+  const filePath = `devotionals/${month}-${day}-devotional.txt`;
+
+  // Fetch the devotional text file
+  fetch(filePath)
+    .then(response => response.text())
+    .then(text => {
+      // Display the devotional text
+      devotionalText.textContent = text;
+    })
+    .catch(error => {
+      console.error("Error fetching devotional:", error);
+      devotionalText.textContent = "Failed to load devotional.";
+    });
 }
 
 // --- Other Helper Functions ---
