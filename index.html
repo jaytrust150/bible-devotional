@@ -108,37 +108,55 @@
       </div>
       <p id="welcomeMessage">Welcome, hope you are blessed by your reading today! In Jesus' name I pray. Amen!</p>
       <div class="font-buttons">
-        <button id="decreaseFont">-</button>
-        <button id="increaseFont">+</button>
+        <button id="decreaseFontDevotional">-</button>
+        <button id="increaseFontDevotional">+</button>
       </div>
     </div>
 
     <div class="top-buttons devotional-elements" style="display: none;">
-      <button id="audioButton">Audio</button>
+      <button id="audioButton">Audio</button> 
     </div>
 
     <nav aria-label="Main Navigation" class="devotional-elements" style="display: none;">
-      <div class="chapter-navigation">
-        <button id="podcastsButton">Podcasts</button>
-        <button id="shareButton">Share</button>
-        <button id="prevDevotional">Prior Day</button>
-        <button id="nextDevotional">Next Day</button>
+      <div class="chapter-navigation"> 
+        <button id="copyDevotionalTop">Copy Devotional</button>
+        <button id="shareDevotionalTop">Share Devotional</button>
+        <button id="prevDevotionalTop">Prior Day</button> 
+        <button id="nextDevotionalTop">Next Day</button>
+        <div id="shareOptionsDevotionalTop" class="share-options" style="display: none;">
+          <a href="#" id="shareFacebookDevotionalTop">Facebook</a> |
+          <a href="#" id="shareXDdevotionalTop">X</a> |
+          <a href="#" id="shareRedditDevotionalTop">Reddit</a> |
+          <a href="#" id="shareGoogleDocsDevotionalTop">Google Docs</a> |
+          <a href="#" id="shareWordDevotionalTop">Word</a> |
+          <a href="#" id="shareEmailDevotionalTop">Email</a> |
+          <a href="#" id="shareTextDevotionalTop">Text</a>
+        </div>
       </div>
 
       <div id="devotionalText"></div>
 
       <div class="chapter-navigation">
-        <button id="podcastsButtonBottom" aria-label="Go to Podcasts">Podcasts</button>
-        <button id="shareButtonBottom" aria-label="Share devotional">Share</button>
-        <button id="prevDevotionalBottom" aria-label="Go to previous day's devotional">Prior Day</button>
-        <button id="nextDevotionalBottom" aria-label="Go to next day's devotional">Next Day</button>
+        <button id="copyDevotional">Copy Devotional</button>
+        <button id="shareDevotional">Share Devotional</button>
+        <button id="prevDevotional">Prior Day</button> 
+        <button id="nextDevotional">Next Day</button>
+        <div id="shareOptionsDevotional" class="share-options" style="display: none;">
+          <a href="#" id="shareFacebookDevotional">Facebook</a> |
+          <a href="#" id="shareXDdevotional">X</a> |
+          <a href="#" id="shareRedditDevotional">Reddit</a> |
+          <a href="#" id="shareGoogleDocsDevotional">Google Docs</a> |
+          <a href="#" id="shareWordDevotional">Word</a> |
+          <a href="#" id="shareEmailDevotional">Email</a> |
+          <a href="#" id="shareTextDevotional">Text</a>
+        </div>
       </div>
     </nav>
 
     <div class="search-container devotional-elements" style="display: none;">
-      <input type="text" id="searchInput"
+      <input type="text" id="searchInputDevotional"
         placeholder="Search the Bible using the Bible App (e.g., Mark; John 3:16; Rom 8:28-31)">
-      <button id="searchButton">Search</button>
+      <button id="searchButtonDevotional">Search</button>
     </div>
 
   </div>

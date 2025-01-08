@@ -1,5 +1,3 @@
-// script.js
-
 // --- Constants --- 
 const appTitle = document.getElementById('appTitle');
 const bibleAppButton = document.getElementById('bibleAppButton');
@@ -20,6 +18,18 @@ const podcastsButtonBottom = document.getElementById('podcastsButtonBottom');
 const shareButtonBottom = document.getElementById('shareButtonBottom');
 const prevDevotionalBottom = document.getElementById('prevDevotionalBottom');
 const nextDevotionalBottom = document.getElementById('nextDevotionalBottom');
+
+// --- New Constants for Devotional Buttons ---
+const copyDevotionalTop = document.getElementById('copyDevotionalTop');
+const shareDevotionalTop = document.getElementById('shareDevotionalTop');
+const shareOptionsDevotionalTop = document.getElementById('shareOptionsDevotionalTop');
+const copyDevotional = document.getElementById('copyDevotional');
+const shareDevotional = document.getElementById('shareDevotional');
+const shareOptionsDevotional = document.getElementById('shareOptionsDevotional');
+const searchInputDevotional = document.getElementById('searchInputDevotional');
+const searchButtonDevotional = document.getElementById('searchButtonDevotional');
+const decreaseFontDevotional = document.getElementById('decreaseFontDevotional');
+const increaseFontDevotional = document.getElementById('increaseFontDevotional');
 
 
 // --- Bible App Elements (initially visible) ---
@@ -160,6 +170,60 @@ nextDevotionalBottom.addEventListener('click', () => {
 // --- Search Button ---
 searchButton.addEventListener('click', () => {
   // ... code to handle search using api.bible ...
+});
+
+
+// --- Copy Devotional Button ---
+copyDevotionalTop.addEventListener('click', () => {
+  // ... code to copy devotional text ...
+  const textToCopy = devotionalText.textContent; 
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => {
+      // Optional: Display a success message to the user
+      alert('Devotional copied to clipboard!'); 
+    })
+    .catch(err => {
+      console.error('Failed to copy devotional: ', err);
+    });
+});
+
+copyDevotional.addEventListener('click', () => {
+  // ... code to copy devotional text ...
+  const textToCopy = devotionalText.textContent; 
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => {
+      // Optional: Display a success message to the user
+      alert('Devotional copied to clipboard!'); 
+    })
+    .catch(err => {
+      console.error('Failed to copy devotional: ', err);
+    });
+});
+
+
+// --- Share Devotional Button ---
+shareDevotionalTop.addEventListener('click', () => {
+  // ... code to show share options for devotional ...
+  shareOptionsDevotionalTop.style.display = 'block'; // Example to show share options
+});
+
+shareDevotional.addEventListener('click', () => {
+  // ... code to show share options for devotional ...
+  shareOptionsDevotional.style.display = 'block'; // Example to show share options
+});
+
+// --- Search Button (Devotional) ---
+searchButtonDevotional.addEventListener('click', () => {
+  // ... code to handle search in the Bible App from the devotional section ...
+});
+
+// --- Font Buttons (Devotional) ---
+decreaseFontDevotional.addEventListener('click', () => {
+  // ... code to decrease font size in the devotional text ...
+});
+
+increaseFontDevotional.addEventListener('click', () => {
+  // ... code to increase font size in the devotional text ...
 });
 
 // ... other button functions ...
