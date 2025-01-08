@@ -1,6 +1,7 @@
 // script.js
 
 // --- Constants --- 
+const appTitle = document.getElementById('appTitle');
 const bibleAppButton = document.getElementById('bibleAppButton');
 const dailyDevotionalButton = document.getElementById('dailyDevotionalButton');
 const darkModeToggle = document.getElementById('darkModeToggle');
@@ -52,7 +53,10 @@ dailyDevotionalButton.addEventListener('click', () => {
 
   // 3. Update button text and functionality
   dailyDevotionalButton.style.display = 'none';
-  bibleAppButton.style.display = 'inline-block'; // Make the Bible App button visible 
+  bibleAppButton.style.display = 'inline-block';
+
+  // Update the title
+  appTitle.innerHTML = '<span class="daily">Daily</span> <span class="devotional">Devotional</span>'; 
 
   // 4. Fetch and display initial devotional
   fetchDevotional();
@@ -75,8 +79,11 @@ bibleAppButton.addEventListener('click', () => {
   answerDisplay.style.display = 'block';
 
   // 3. Update button text and functionality
-  bibleAppButton.style.display = 'none'; 
-  dailyDevotionalButton.style.display = 'inline-block'; // Make the Daily Devotional button visible
+  bibleAppButton.style.display = 'none';
+  dailyDevotionalButton.style.display = 'inline-block';
+
+  // Update the title
+  appTitle.innerHTML = '<span class="bible">Bible</span> <span class="app">App</span>'; 
 });
 
 // --- Dark Mode Toggle Button ---
