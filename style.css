@@ -1,0 +1,136 @@
+/* --- General Styles --- */
+
+body {
+    font-family: 'Roboto Slab', serif;
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark gray text */
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff; /* White container background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h1 .bible { /* For the "Bible" part of the title */
+    color: #007bff; /* Blue */
+}
+
+h1 .app { /* For the "App" part of the title */
+    color: #ffc107; /* Yellow */
+}
+
+h1 .daily { /* For the "Daily" part of the title */
+    color: #007bff; /* Blue */
+}
+
+h1 .devotional { /* For the "Devotional" part of the title */
+    color: #ffc107; /* Yellow */
+}
+
+/* --- Top Bar --- */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* --- Buttons --- */
+
+button,
+.top-buttons a {
+    color: white;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+/* Specific button colors */
+#shareDevotional,
+#shareSelectedVerse,
+#copySelectedVerse {
+    background-color: #3b5998; /* Facebook blue */
+}
+
+#audioButton {
+    background-color: #ffc107; /* Yellow */
+}
+
+#bibleAppButton,
+#dailyDevotionalButton {
+    background-color: #007bff; /* Blue */
+}
+
+#darkModeToggle {
+    background-color: #6c757d; /* Gray */
+}
+
+#decreaseFont,
+#increaseFont,
+#decreaseFontDevotional,
+#increaseFontDevotional {
+    background-color: #28a745; /* Green */
+}
+
+/* ***** Green for Navigation Buttons ***** */
+#prevDevotional,
+#nextDevotional,
+#prevChapter,
+#nextChapter {
+    background-color: #5cb85c; /* Light green */
+}
+
+#podcastsButton {
+    background-color: orange;
+}
+
+button:hover,
+.top-buttons a:hover {
+    opacity: 0.8;
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+/* --- Verse Display --- */
+
+#answerDisplay {
+    margin-top: 20px;
+    font-size: 1em;
+    line-height: 1.8;
+}
+
+/* --- Devotional Text --- */
+
+#devotionalText {
+    margin-top: 20px;
+    font-size: 1em;
+    line-height: 1.8;
+}
+
+/* --- Navigation --- */
+
+.chapter-navigation {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap
