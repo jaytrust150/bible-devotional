@@ -116,6 +116,10 @@ button:active {
     margin-top: 20px;
     font-size: 1em;
     line-height: 1.8;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 /* --- Devotional Text --- */
@@ -133,4 +137,116 @@ button:active {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap
+    gap: 10px;
+}
+
+/* --- Search Container --- */
+
+.search-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#searchInput, #devotionalSearchInput {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+}
+
+#searchButton, #devotionalSearchButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#searchButton:hover, #devotionalSearchButton:hover {
+    background-color: #0056b3;
+}
+
+/* --- Search Result --- */
+
+.search-result {
+    margin-bottom: 20px;
+}
+
+.search-result h3 {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.search-result p {
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+/* --- Pill Selectors --- */
+
+.pill {
+    background-color: #e9ecef; /* Light gray */
+    border: 1px solid #ced4da; /* Gray border */
+    border-radius: 20px; /* Rounded corners */
+    padding: 5px 10px;
+    margin-right: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pill select {
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+    color: #495057; /* Dark gray */
+    cursor: pointer;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.pill select:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Blue focus ring */
+}
+
+/* --- Dark Mode --- */
+
+body.dark-mode {
+    background-color: #212529; /* Dark background */
+    color: #ced4da; /* Light gray text */
+}
+
+body.dark-mode .container {
+    background-color: #343a40; /* Darker container background */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); /* Lighter shadow */
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #f8f9fa; /* Very light gray */
+}
+
+body.dark-mode h1 .bible,
+body.dark-mode h1 .daily {
+    color: #55a9ff; /* Lighter blue */
+}
+
+body.dark-mode h1 .app,
+body.dark-mode h1 .devotional {
+    color: #ffe084; /* Lighter yellow */
+}
+
+body.dark-mode button,
+body.dark-mode .top-buttons a {
+        color: #fff; /* White */
+    }

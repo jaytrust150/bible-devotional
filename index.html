@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div class="container">
         <div class="top-bar">
@@ -22,21 +21,10 @@
         <div class="bible-app-elements">
             <div class="top-buttons">
                 <div class="pills-container">
-                    <div class="pill" id="combinedPill">
-                        <span id="bookPill" data-value="John">
-                            <select id="bookSelect"></select>
-                        </span>
-                        <span id="chapterPill" data-value="3">
-                            <select id="chapterSelect"></select>
-                        </span>
-                        <span id="versionPill" data-value="KJV">
-                            <select id="versionSelectTop">
-                                <option value="KJV">KJV</option>
-                                <option value="ASV">ASV</option>
-                                <option value="WEB">WEB</option>
-                            </select>
-                        </span>
-                    </div>
+                    <select id="languageSelect"></select>
+                    <select id="versionSelect"></select>
+                    <select id="bookSelect"></select>
+                    <select id="chapterSelect"></select>
                 </div>
                 <p class="instruction-text">Select a Bible book to read from the tabs on left or search for one below!</p>
                 <div class="font-buttons">
@@ -50,43 +38,25 @@
                 <button id="searchButton">Search</button>
             </div>
 
-            <div class="chapter-navigation">
-                <button id="copySelectedVerse">Copy Selected Verse</button>
-                <button id="shareSelectedVerse">Share Selected Verse</button>
-                <button id="prevChapter">Previous Chapter</button>
-                <button id="nextChapter">Next Chapter</button>
-                <div id="shareOptions" class="share-options" style="display: none;">
-                    <a href="#" id="copyVerseLink">Copy</a> |
-                    <a href="#" id="shareFacebookVerse">Facebook</a> |
-                    <a href="#" id="shareXVerse">X</a> |
-                    <a href="#" id="shareRedditVerse">Reddit</a> |
-                    <a href="#" id="shareGoogleDocsVerse">Google Docs</a> |
-                    <a href="#" id="shareWordVerse">Word</a> |
-                    <a href="#" id="shareEmailVerse">Email</a> |
-                    <a href="#" id="shareTextVerse">Text</a>
-                </div>
-            </div>
-
             <div id="answerDisplay"></div>
 
             <div class="chapter-navigation">
-                <button id="copySelectedVerse">Copy Selected Verse</button>
-                <button id="shareSelectedVerse">Share Selected Verse</button>
-                <button id="prevChapter">Previous Chapter</button>
-                <button id="nextChapter">Next Chapter</button>
-                <div id="shareOptions" class="share-options" style="display: none;">
-                    <a href="#" id="copyVerseLink">Copy</a> |
-                    <a href="#" id="shareFacebookVerse">Facebook</a> |
-                    <a href="#" id="shareXVerse">X</a> |
-                    <a href="#" id="shareRedditVerse">Reddit</a> |
-                    <a href="#" id="shareGoogleDocsVerse">Google Docs</a> |
-                    <a href="#" id="shareWordVerse">Word</a> |
-                    <a href="#" id="shareEmailVerse">Email</a> |
-                    <a href="#" id="shareTextVerse">Text</a>
+                <button class="copy-selected-verse">Copy Selected Verse</button>
+                <button class="share-selected-verse">Share Selected Verse</button>
+                <button class="prev-chapter">Previous Chapter</button>
+                <button class="next-chapter">Next Chapter</button>
+                <div class="share-options" style="display: none;">
+                    <a href="#" class="copy-verse-link">Copy</a> |
+                    <a href="#" class="share-facebook-verse">Facebook</a> |
+                    <a href="#" class="share-x-verse">X</a> |
+                    <a href="#" class="share-reddit-verse">Reddit</a> |
+                    <a href="#" class="share-google-docs-verse">Google Docs</a> |
+                    <a href="#" class="share-word-verse">Word</a> |
+                    <a href="#" class="share-email-verse">Email</a> |
+                    <a href="#" class="share-text-verse">Text</a>
                 </div>
             </div>
         </div>
-
 
         <div class="devotional-elements" style="display: none;">
             <div class="top-buttons">
@@ -125,17 +95,17 @@
                 <div class="chapter-navigation">
                     <button id="podcastsButton">Podcasts</button>
                     <button id="shareDevotional">Share Devotional</button>
-                    <button id="prevDevotional">Prior Day</button>
-                    <button id="nextDevotional">Next Day</button>
-                    <div id="shareOptionsDevotional" class="share-options-devotional" style="display: none;">
-                        <a href="#" id="copyDevotionalLink">Copy</a> |
-                        <a href="#" id="shareFacebookDevotional">Facebook</a> |
-                        <a href="#" id="shareXDevotional">X</a> |
-                        <a href="#" id="shareRedditDevotional">Reddit</a> |
-                        <a href="#" id="shareGoogleDocsDevotional">Google Docs</a> |
-                        <a href="#" id="shareWordDevotional">Word</a> |
-                        <a href="#" id="shareEmailDevotional">Email</a> |
-                        <a href="#" id="shareTextDevotional">Text</a>
+                    <button class="prev-devotional">Prior Day</button>
+                    <button class="next-devotional">Next Day</button>
+                    <div class="share-options-devotional" style="display: none;">
+                        <a href="#" class="copy-devotional-link">Copy</a> |
+                        <a href="#" class="share-facebook-devotional">Facebook</a> |
+                        <a href="#" class="share-x-devotional">X</a> |
+                        <a href="#" class="share-reddit-devotional">Reddit</a> |
+                        <a href="#" class="share-google-docs-devotional">Google Docs</a> |
+                        <a href="#" class="share-word-devotional">Word</a> |
+                        <a href="#" class="share-email-devotional">Email</a> |
+                        <a href="#" class="share-text-devotional">Text</a>
                     </div>
                 </div>
 
@@ -144,29 +114,27 @@
                 <div class="chapter-navigation">
                     <button id="podcastsButton">Podcasts</button>
                     <button id="shareDevotional">Share Devotional</button>
-                    <button id="prevDevotional">Prior Day</button>
-                    <button id="nextDevotional">Next Day</button>
-                    <div id="shareOptionsDevotional" class="share-options-devotional" style="display: none;">
-                        <a href="#" id="copyDevotionalLink">Copy</a> |
-                        <a href="#" id="shareFacebookDevotional">Facebook</a> |
-                        <a href="#" id="shareXDevotional">X</a> |
-                        <a href="#" id="shareRedditDevotional">Reddit</a> |
-                        <a href="#" id="shareGoogleDocsDevotional">Google Docs</a> |
-                        <a href="#" id="shareWordDevotional">Word</a> |
-                        <a href="#" id="shareEmailDevotional">Email</a> |
-                        <a href="#" id="shareTextDevotional">Text</a>
+                    <button class="prev-devotional">Prior Day</button>
+                    <button class="next-devotional">Next Day</button>
+                    <div class="share-options-devotional" style="display: none;">
+                        <a href="#" class="copy-devotional-link">Copy</a> |
+                        <a href="#" class="share-facebook-devotional">Facebook</a> |
+                        <a href="#" class="share-x-devotional">X</a> |
+                        <a href="#" class="share-reddit-devotional">Reddit</a> |
+                        <a href="#" class="share-google-docs-devotional">Google Docs</a> |
+                        <a href="#" class="share-word-devotional">Word</a> |
+                        <a href="#" class="share-email-devotional">Email</a> |
+                        <a href="#" class="share-text-devotional">Text</a>
                     </div>
                 </div>
             </nav>
 
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Enter search query here">
-                <button id="searchButton">Search</button>
+                <input type="text" id="devotionalSearchInput" placeholder="Enter search query here">
+                <button id="devotionalSearchButton">Search</button>
             </div>
         </div>
-
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

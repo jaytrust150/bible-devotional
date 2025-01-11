@@ -1,42 +1,313 @@
-// --- Constants (Bible App Elements - Initially Visible) ---
-const appTitle = document.getElementById('appTitle');
-const dailyDevotionalButton = document.getElementById('dailyDevotionalButton');
-const bibleAppButton = document.getElementById('bibleAppButton');
-const darkModeToggle = document.getElementById('darkModeToggle');
-const bookSelect = document.getElementById('bookSelect');
-const chapterSelect = document.getElementById('chapterSelect');
-const versionSelectTop = document.getElementById('versionSelectTop');
-const instructionText = document.querySelector('.instruction-text');
-const decreaseFont = document.getElementById('decreaseFont');
-const increaseFont = document.getElementById('increaseFont');
-const searchInputs = document.querySelectorAll('#searchInput'); // Select both search inputs
-const searchButtons = document.querySelectorAll('#searchButton'); // Select both search buttons
-const copySelectedVerses = document.querySelectorAll('#copySelectedVerse'); //Both copy verse buttons
-const shareSelectedVerses = document.querySelectorAll('#shareSelectedVerse'); //Both share verse buttons
-const prevChapter = document.getElementById('prevChapter');
-const nextChapter = document.getElementById('nextChapter');
-const shareOptions = document.getElementById('shareOptions');
-const answerDisplay = document.getElementById('answerDisplay');
-const copyVerseLink = document.getElementById('copyVerseLink'); // For copying Bible verses
+// --- Global Variables ---
+const apiKey = "e8494e15ce590ee0936ad96abfe85880"; // **FOR TESTING ONLY - Move to server-side**
+let selectedLanguage = "English"; // Default language
+let selectedVersionId = "de4e12af7f28f599-01"; // Default version (KJV)
+let selectedBookId = "GEN"; // Default book
+let selectedChapter = 1; // Default chapter
 
-// --- Constants (Daily Devotional Elements - Initially Hidden) ---
-const monthSelect = document.getElementById('monthSelect');
-const daySelect = document.getElementById('daySelect');
-const yearDisplay = document.getElementById('yearDisplay');
-const welcomeMessage = document.getElementById('welcomeMessage');
-const decreaseFontDevotional = document.getElementById('decreaseFontDevotional');
-const increaseFontDevotional = document.getElementById('increaseFontDevotional');
-const audioButton = document.getElementById('audioButton');
-const podcastsButton = document.getElementById('podcastsButton');
-const shareDevotionals = document.querySelectorAll('#shareDevotional'); // Select both buttons
-const shareOptionsDevotionals = document.querySelectorAll('.share-options-devotional'); // Select both divs
-const copyDevotionalLink = document.getElementById('copyDevotionalLink');
-const prevDevotionals = document.querySelectorAll('#prevDevotional'); // Select both buttons
-const nextDevotionals = document.querySelectorAll('#nextDevotional'); // Select both buttons
-const devotionalText = document.getElementById('devotionalText');
+// --- Data ---
+const bibleVersions = {
+    "English": [
+        { name: "King James Version (KJV)", id: "de4e12af7f28f599-01" },
+        { name: "American Standard Version (ASV)", id: "06125adad2d5898a-01" },
+        { name: "World English Bible (WEB)", id: "9879dbb7cfe39e4d-01" },
+        { name: "Geneva Bible", id: "c315fa9f71d4af3a-01" },
+        { name: "Douay-Rheims American 1899", id: "179568874c45066f-01" },
+        { name: "Revised Version 1885", id: "40072c4a5aba4022-01" },
+        { name: "Literal Standard Version", id: "01b29f4b342acc35-01" }
+    ],
+    "Arabic, Standard": [
+        // Add other languages and versions here
+    ]
+};
 
+// --- DOM Elements ---
+const languageSelect = document.getElementById("languageSelect");
+const versionSelect = document.getElementById("versionSelect");
+const bookSelect = document.getElementById("bookSelect");
+const chapterSelect = document.getElementById("chapterSelect");
+const bibleTextDisplay = document.getElementById("answerDisplay");
+const searchInput = document.getElementById('searchInput');
+const searchButton = document.getElementById('searchButton');
 
 // --- Functions ---
+
+// 1. Populate Language Select
+function populateLanguageSelect() {
+    languageSelect.innerHTML = ""; // Clear existing options
+    for (const language in bibleVersions) {
+        const option = document.createElement("option");
+        option.value = language;
+        option.text = language;
+        languageSelect.appendChild(option);
+    }
+}
+
+// 2. Populate Version Select
+function populateVersionSelect() {
+    versionSelect.innerHTML = "";
+    const versions = bibleVersions[selectedLanguage];
+    for (const version of versions) {
+        const option = document.createElement("option");
+        option.value = version.id;
+        option.text = version.name;
+        versionSelect.appendChild(option);
+    }
+}
+
+// 3. Fetch and Populate Book Select
+async function populateBookSelect() {
+    bookSelect.innerHTML = "";
+    const url = `https://api.scripture.api.bible/v1/bibles/${selectedVersionId}/books`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "api-key": apiKey,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        data.data.forEach(book => {
+            const option = document.createElement("option");
+            option.value = book.id;
+            option.text = book.name;
+            bookSelect.appendChild(option);
+        });
+
+        selectedBookId = data.data[0].id; // Default to the first book
+        populateChapterSelect();
+
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        bibleTextDisplay.innerHTML = "Error loading Bible books.";
+    }
+}
+
+// 4. Fetch and Populate Chapter Select
+async function populateChapterSelect() {
+    chapterSelect.innerHTML = "";
+    const url = `https://api.scripture.api.bible/v1/bibles/${selectedVersionId}/books/${selectedBookId}/chapters`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "api-key": apiKey,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        const chapters = data.data;
+
+        for (let i = 0; i < chapters.length; i++) {
+            const option = document.createElement("option");
+            option.value = chapters[i].id;
+            option.text = chapters[i].number;
+            chapterSelect.appendChild(option);
+        }
+
+        selectedChapter = chapters[0].id; // Default to the first chapter
+
+    } catch (error) {
+        console.error("Error fetching chapters:", error);
+        bibleTextDisplay.innerHTML = "Error loading chapters.";
+    }
+}
+
+// 5. Fetch Bible Text
+async function fetchBibleText() {
+    const baseURL = "https://api.scripture.api.bible/v1/bibles";
+    const url = `${baseURL}/${selectedVersionId}/chapters/${selectedChapter}?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false&use-org-id=false`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "api-key": apiKey,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayBibleText(data.data.content);
+    } catch (error) {
+        console.error("Error fetching Bible text:", error);
+        bibleTextDisplay.innerHTML = "Error loading Bible text.";
+    }
+}
+
+// 6. Display Bible Text
+function displayBibleText(text) {
+    bibleTextDisplay.innerHTML = text;
+}
+
+// --- Search Functionality ---
+async function searchBible(query) {
+    const url = `https://api.scripture.api.bible/v1/bibles/${selectedVersionId}/search?query=${encodeURIComponent(query)}`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'api-key': apiKey
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        displaySearchResults(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        bibleTextDisplay.innerHTML = "Error performing search.";
+    }
+}
+
+function displaySearchResults(data) {
+    bibleTextDisplay.innerHTML = ''; // Use the global variable
+
+    if (data.data && data.data.verses && data.data.verses.length > 0) { // Check for verses array
+        data.data.verses.forEach(verse => {
+            const verseElement = document.createElement('div');
+            verseElement.classList.add('search-result');
+            verseElement.innerHTML = `
+                <h3>${verse.reference}</h3>
+                <p>${verse.text}</p>
+            `;
+            bibleTextDisplay.appendChild(verseElement);
+        });
+    } else {
+        bibleTextDisplay.innerHTML = '<p>No results found.</p>';
+    }
+}
+
+// Initialize the app
+function initializeApp() {
+    populateLanguageSelect();
+    populateVersionSelect();
+    populateBookSelect().then(() => {
+        fetchBibleText(); // Initial fetch for the default version and chapter
+    });
+}
+
+window.addEventListener("DOMContentLoaded", initializeApp);
+// 5. Fetch Bible Text
+async function fetchBibleText() {
+    const baseURL = "https://api.scripture.api.bible/v1/bibles";
+    const url = `${baseURL}/${selectedVersionId}/chapters/${selectedChapter}?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false&use-org-id=false`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                "api-key": apiKey,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayBibleText(data.data.content);
+    } catch (error) {
+        console.error("Error fetching Bible text:", error);
+        bibleTextDisplay.innerHTML = "Error loading Bible text.";
+    }
+}
+
+// 6. Display Bible Text
+function displayBibleText(text) {
+    bibleTextDisplay.innerHTML = text;
+}
+
+// --- Search Functionality ---
+async function searchBible(query) {
+    const url = `https://api.scripture.api.bible/v1/bibles/${selectedVersionId}/search?query=${encodeURIComponent(query)}`;
+
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'api-key': apiKey
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        displaySearchResults(data);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        bibleTextDisplay.innerHTML = "Error performing search.";
+    }
+}
+
+function displaySearchResults(data) {
+    bibleTextDisplay.innerHTML = ''; // Use the global variable
+
+    if (data.data && data.data.verses && data.data.verses.length > 0) { // Check for verses array
+        data.data.verses.forEach(verse => {
+            const verseElement = document.createElement('div');
+            verseElement.classList.add('search-result');
+            verseElement.innerHTML = `
+                <h3>${verse.reference}</h3>
+                <p>${verse.text}</p>
+            `;
+            bibleTextDisplay.appendChild(verseElement);
+        });
+    } else {
+        bibleTextDisplay.innerHTML = '<p>No results found.</p>';
+    }
+}
+
+// --- Event Listeners ---
+
+// Language Select Change
+languageSelect.addEventListener("change", () => {
+    selectedLanguage = languageSelect.value;
+    populateVersionSelect();
+    populateBookSelect(); // Update book list when language changes
+});
+
+// Version Select Change
+versionSelect.addEventListener("change", () => {
+    selectedVersionId = versionSelect.value;
+    populateBookSelect(); // Update book list when version changes
+});
+
+// Book Select Change
+bookSelect.addEventListener("change", () => {
+    selectedBookId = bookSelect.value;
+    populateChapterSelect();
+    fetchBibleText(); // Fetch text when book changes
+});
+
+// Chapter Select Change
+chapterSelect.addEventListener("change", () => {
+    selectedChapter = chapterSelect.value;
+    fetchBibleText(); // Fetch text when chapter changes
+});
+
+// Search Button Click
+searchButton.addEventListener('click', () => {
+    const query = searchInput.value;
+    if (query) {
+        searchBible(query);
+    }
+});
 
 // --- Daily Devotional Button ---
 dailyDevotionalButton.addEventListener('click', () => {
@@ -126,7 +397,7 @@ function fetchDevotional() {
     const day = daySelect.value;     // Get the selected day
 
     // Construct the file path using template literals correctly:
-    const filePath = `${month}.${day}-devotional.txt`; 
+    const filePath = `<span class="math-inline">\{month\}\.</span>{day}-devotional.txt`; 
 
     fetch(filePath)
         .then(response => {
@@ -157,63 +428,26 @@ function fetchDevotional() {
         });
 }
 
-// --- Book Select, Chapter Select, Version Select ---
-// ... (your existing code for book, chapter, version selection) ...
-
-// --- Font Size Buttons ---
-// ... (your existing code for font size buttons) ...
-
-// --- Search Functionality ---
-searchButtons.forEach((button, index) => {
-    button.addEventListener('click', () => {
-        const searchQuery = searchInputs[index].value;
-
-        // --- Check if in Bible App mode ---
-        const isBibleAppMode = bibleAppButton.style.display === 'none';
-
-        if (!isBibleAppMode) {
-            // 1. Hide Daily Devotional elements
-            const devotionalElements = document.querySelectorAll('.devotional-elements');
-            devotionalElements.forEach(element => element.style.display = 'none');
-
-            // 2. Show Bible App elements
-            const bibleAppElements = document.querySelectorAll('.bible-app-elements');
-            bibleAppElements.forEach(element => element.style.display = 'block');
-
-            // 3. Update button text and functionality
-            bibleAppButton.style.display = 'none';
-            dailyDevotionalButton.style.display = 'inline-block';
-
-            // Update the title
-            appTitle.innerHTML = '<span class="bible">Bible</span> <span class="app">App</span>';
-        }
-
-        // 4. Perform the search (using the top search input)
-        searchInputs[0].value = searchQuery; // Set the value of the top search input (index 0)
-        // Trigger a 'click' event on the top search button to reuse its functionality
-        searchButtons[0].click();
-    });
-});
-
 // --- Copy Selected Verse ---
-copySelectedVerses.forEach(button => {
-    button.addEventListener('click', () => {
-        const selectedVerse = getSelectedVerse();
-
-        if (selectedVerse) {
-            navigator.clipboard.writeText(selectedVerse)
-                .then(() => {
-                    // Optional: Display a success message
-                    alert('Verse copied to clipboard!');
-                })
-                .catch(err => {
-                    console.error('Failed to copy verse: ', err);
-                });
-        } else {
-            // Optional: Alert the user that they need to select a verse first
-            alert('Please select a verse to copy.');
-        }
+function copySelectedVerses() {
+    // Implement the logic to copy selected verses
+    const selectedVerses = document.querySelectorAll('.selected-verse');
+    let versesText = '';
+    selectedVerses.forEach(verse => {
+        versesText += verse.innerText + '\n';
     });
+
+    navigator.clipboard.writeText(versesText).then(() => {
+        console.log('Verses copied to clipboard');
+        alert('Verses copied to clipboard');
+    }).catch(err => {
+        console.error('Could not copy text: ', err);
+    });
+}
+
+// Add event listener for copy button
+document.querySelectorAll('.copy-selected-verse').forEach(button => {
+    button.addEventListener('click', copySelectedVerses);
 });
 
 // --- Share Selected Verse ---
@@ -227,7 +461,7 @@ shareSelectedVerses.forEach(button => {
         shareOptions.style.display = shareOptions.style.display === 'none' ? 'block' : 'none';
 
         // --- Share via Facebook ---
-        const shareFacebook = shareOptions.querySelector('#shareFacebookVerse');
+        const shareFacebook = shareOptions.querySelector('.share-facebook-verse');
         navigator.clipboard.writeText(contentToShare).then(() => {
             console.log('Verse text copied to clipboard');
         }).catch(err => {
@@ -237,22 +471,22 @@ shareSelectedVerses.forEach(button => {
         shareFacebook.target = '_blank';
 
         // --- Share via X (Twitter) ---
-        const shareX = shareOptions.querySelector('#shareXVerse');
+        const shareX = shareOptions.querySelector('.share-x-verse');
         shareX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(contentToShare.trim())}`;
         shareX.target = '_blank';
 
         // --- Share via Reddit ---
-        const shareReddit = shareOptions.querySelector('#shareRedditVerse');
+        const shareReddit = shareOptions.querySelector('.share-reddit-verse');
         shareReddit.href = `https://www.reddit.com/submit?title=Shared%20Verse&text=${encodeURIComponent(contentToShare.trim())}`;
         shareReddit.target = '_blank';
 
         // --- Share via Google Docs ---
-        const shareGoogleDocs = shareOptions.querySelector('#shareGoogleDocsVerse');
+        const shareGoogleDocs = shareOptions.querySelector('.share-google-docs-verse');
         shareGoogleDocs.href = `https://docs.google.com/document/create?usp=docs_home&title=Shared%20Verse&content=${encodeURIComponent(contentToShare.trim())}`;
         shareGoogleDocs.target = '_blank';
 
         // --- Share via Word ---
-        const shareWord = shareOptions.querySelector('#shareWordVerse');
+        const shareWord = shareOptions.querySelector('.share-word-verse');
         shareWord.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default link behavior
             // For Microsoft Word, have the user copy the verse manually
@@ -260,18 +494,15 @@ shareSelectedVerses.forEach(button => {
         });
 
         // --- Share via Email ---
-        const shareEmail = shareOptions.querySelector('#shareEmailVerse');
+        const shareEmail = shareOptions.querySelector('.share-email-verse');
         const emailBody = `${contentToShare.trim()}\n\nRead more at: [your website link here]`; // Replace with your actual link
         shareEmail.href = `mailto:?subject=Shared Verse&body=${encodeURIComponent(emailBody)}`;
 
         // --- Share via Text (SMS) ---
-        const shareText = shareOptions.querySelector('#shareTextVerse');
+        const shareText = shareOptions.querySelector('.share-text-verse');
         shareText.href = `sms:?body=${encodeURIComponent(contentToShare.trim())}`;
     });
 });
-
-// --- Previous Chapter / Next Chapter ---
-// ... (your existing code for previous/next chapter with "Next Book" functionality) ...
 
 // --- Copy Verse Link ---
 copyVerseLink.addEventListener('click', (event) => {
@@ -290,9 +521,6 @@ copyVerseLink.addEventListener('click', (event) => {
         });
 });
 
-// --- Audio Button ---
-// ... (your existing code for audio playback using accessibility features) ...
-
 // --- Podcasts Button ---
 podcastsButton.addEventListener('click', () => {
     devotionalText.innerHTML = `
@@ -302,7 +530,7 @@ podcastsButton.addEventListener('click', () => {
 });
 
 // --- Share Devotional ---
-shareDevotionals.forEach(button => {
+document.querySelectorAll('.share-devotional').forEach(button => {
     button.addEventListener('click', () => {
         // Get the content to share (devotional)
         const devotionalTextDiv = document.getElementById('devotionalText');
@@ -329,7 +557,7 @@ shareDevotionals.forEach(button => {
         shareOptionsDevotional.style.display = shareOptionsDevotional.style.display === 'none' ? 'block' : 'none';
 
         // --- Share via Facebook ---
-        const shareFacebook = shareOptionsDevotional.querySelector('#shareFacebookDevotional');
+        const shareFacebook = shareOptionsDevotional.querySelector('.share-facebook-devotional');
         shareFacebook.addEventListener('click', () => {
             navigator.clipboard.writeText(cleanedText).then(() => {
                 console.log('Devotional text copied to clipboard for Facebook');
@@ -341,22 +569,22 @@ shareDevotionals.forEach(button => {
         });
 
         // --- Share via X (Twitter) ---
-        const shareX = shareOptionsDevotional.querySelector('#shareXDevotional');
+        const shareX = shareOptionsDevotional.querySelector('.share-x-devotional');
         shareX.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(cleanedText)}`;
         shareX.target = '_blank';
 
         // --- Share via Reddit ---
-        const shareReddit = shareOptionsDevotional.querySelector('#shareRedditDevotional');
+        const shareReddit = shareOptionsDevotional.querySelector('.share-reddit-devotional');
         shareReddit.href = `https://www.reddit.com/submit?title=Shared%20Devotional&text=${encodeURIComponent(cleanedText)}`;
         shareReddit.target = '_blank';
 
         // --- Share via Google Docs ---
-        const shareGoogleDocs = shareOptionsDevotional.querySelector('#shareGoogleDocsDevotional');
+        const shareGoogleDocs = shareOptionsDevotional.querySelector('.share-google-docs-devotional');
         shareGoogleDocs.href = `https://docs.google.com/document/create?usp=docs_home&title=Shared%20Devotional&content=${encodeURIComponent(cleanedHtml)}`;
         shareGoogleDocs.target = '_blank';
 
         // --- Share via Word ---
-        const shareWord = shareOptionsDevotional.querySelector('#shareWordDevotional');
+        const shareWord = shareOptionsDevotional.querySelector('.share-word-devotional');
         shareWord.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default link behavior
             // For Microsoft Word, have the user copy the verse manually
@@ -364,43 +592,45 @@ shareDevotionals.forEach(button => {
         });
 
         // --- Share via Email ---
-        const shareEmail = shareOptionsDevotional.querySelector('#shareEmailDevotional');
+        const shareEmail = shareOptionsDevotional.querySelector('.share-email-devotional');
         const emailBody = `${cleanedText}\n\nRead more at: [your website link here]`; // Replace with your actual link
         shareEmail.href = `mailto:?subject=Shared Devotional&body=${encodeURIComponent(emailBody)}`;
 
         // --- Share via Text (SMS) ---
-        const shareText = shareOptionsDevotional.querySelector('#shareTextDevotional');
+        const shareText = shareOptionsDevotional.querySelector('.share-text-devotional');
         shareText.href = `sms:?body=${encodeURIComponent(cleanedText)}`;
     });
 });
 
 // --- Copy Devotional Link ---
-copyDevotionalLink.addEventListener('click', () => {
-    const devotionalTextDiv = document.getElementById('devotionalText');
-    let contentToShare = devotionalTextDiv.innerHTML;
+document.querySelectorAll('.copy-devotional-link').forEach(button => {
+    button.addEventListener('click', () => {
+        const devotionalTextDiv = document.getElementById('devotionalText');
+        let contentToShare = devotionalTextDiv.innerHTML;
 
-    // Create a temporary DOM element to parse the HTML content
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = contentToShare;
+        // Create a temporary DOM element to parse the HTML content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = contentToShare;
 
-    // Remove the <title> tag
-    const title = tempDiv.querySelector('title');
-    if (title) {
-        title.remove();
-    }
+        // Remove the <title> tag
+        const title = tempDiv.querySelector('title');
+        if (title) {
+            title.remove();
+        }
 
-    // Get the cleaned HTML content as a string
-    const cleanedHtml = tempDiv.innerHTML;
+        // Get the cleaned HTML content as a string
+        const cleanedHtml = tempDiv.innerHTML;
 
-    navigator.clipboard.write([
-        new ClipboardItem({
-            'text/html': new Blob([cleanedHtml], { type: 'text/html' })
-        })
-    ]).then(() => {
-        console.log('Devotional text copied to clipboard');
-        alert('Devotional text copied to clipboard.');
-    }).catch(err => {
-        console.error('Could not copy text: ', err);
+        navigator.clipboard.write([
+            new ClipboardItem({
+                'text/html': new Blob([cleanedHtml], { type: 'text/html' })
+            })
+        ]).then(() => {
+            console.log('Devotional text copied to clipboard');
+            alert('Devotional text copied to clipboard.');
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+        });
     });
 });
 
@@ -454,12 +684,190 @@ function handleNextDevotional() {
 }
 
 // --- Attach Event Listeners to Both Sets of Buttons ---
-prevDevotionals.forEach(button => {
+document.querySelectorAll('.prev-devotional').forEach(button => {
     button.addEventListener('click', handlePrevDevotional);
 });
 
-nextDevotionals.forEach(button => {
+document.querySelectorAll('.next-devotional').forEach(button => {
     button.addEventListener('click', handleNextDevotional);
 });
 
 // --- Helper Functions ---
+
+// --- Dark Mode Toggle ---
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        // Save the user's preference in local storage
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+        }
+    });
+}
+
+// Check the user's preference on page load
+window.addEventListener('load', () => {
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+    }
+});
+
+// --- Attach Event Listener to Devotional Search Button ---
+if (devotionalSearchButton) {
+    devotionalSearchButton.addEventListener('click', () => {
+        const query = devotionalSearchInput.value;
+        if (query) {
+            // Switch to Bible app side
+            const bibleAppElements = document.querySelectorAll('.bible-app-elements');
+            bibleAppElements.forEach(element => element.style.display = 'block');
+
+            const devotionalElements = document.querySelectorAll('.devotional-elements');
+            devotionalElements.forEach(element => element.style.display = 'none');
+
+            dailyDevotionalButton.style.display = 'inline-block';
+            bibleAppButton.style.display = 'none';
+
+            appTitle.innerHTML = '<span class="bible">Bible</span> <span class="app">App</span>';
+
+            // Perform the search
+            searchBible(query);
+        }
+    });
+}
+
+// --- Initialization ---
+
+function initializeApp() {
+    populateLanguageSelect();
+    populateVersionSelect();
+    populateBookSelect().then(() => {
+        fetchBibleText(); // Initial fetch for the default version and chapter
+    });
+}
+
+window.addEventListener("DOMContentLoaded", initializeApp);
+
+// --- Share Selected Verses ---
+function shareSelectedVerses() {
+    const selectedVerses = document.querySelectorAll('.selected-verse');
+    let versesText = '';
+
+    selectedVerses.forEach(verse => {
+        versesText += verse.innerText + '\n';
+    });
+
+    // Example: Share via email
+    const mailtoLink = `mailto:?subject=Shared Bible Verses&body=${encodeURIComponent(versesText)}`;
+    window.location.href = mailtoLink;
+}
+
+// Add event listener for share button
+document.querySelectorAll('.share-selected-verse').forEach(button => {
+    button.addEventListener('click', shareSelectedVerses);
+});
+
+// Function to share selected verses
+function shareSelectedVerses() {
+    const selectedVerses = document.querySelectorAll('.selected-verse');
+    let versesText = '';
+
+    selectedVerses.forEach(verse => {
+        versesText += verse.innerText + '\n';
+    });
+
+    // Example: Share via email
+    const mailtoLink = `mailto:?subject=Shared Bible Verses&body=${encodeURIComponent(versesText)}`;
+    window.location.href = mailtoLink;
+}
+
+// Fetch list of Bibles
+fetch("https://api.scripture.api.bible/v1/bibles", {
+    method: 'GET',
+    headers: {
+        'accept': 'application/json',
+        'api-key': 'e8494e15ce590ee0936ad96abfe85880'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error fetching Bibles:', error));
+
+// Fetch Bible text
+function fetchBibleText(bibleId, chapterId) {
+    if (!bibleId || !chapterId) {
+        console.error('Invalid bibleId or chapterId');
+        return;
+    }
+
+    const url = `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${chapterId}?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false&use-org-id=false`;
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'api-key': apiKey
+        }
+    })
+    .then(response => {
+        if (response.status === 200) {
+            return response.json();
+        } else if (response.status === 400) {
+            throw new Error('Not authorized to retrieve any Bibles or invalid language_code provided');
+        } else if (response.status === 401) {
+            throw new Error('Unauthorized for API access. Missing or Invalid API Key provided');
+        } else if (response.status === 403) {
+            throw new Error('Not authorized to retrieve Sections for this Bible');
+        } else if (response.status === 404) {
+            throw new Error('Book not found');
+        } else {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+    })
+    .then(data => console.log(data))
+    .catch(error => console.error('Error fetching Bible text:', error));
+}
+
+// Example usage of fetchBibleText
+fetchBibleText(selectedVersionId, selectedChapter);
+
+// Function to search verses
+function searchVerses(bibleId, query, limit = 10, offset = 0) {
+    const url = `https://api.scripture.api.bible/v1/bibles/${bibleId}/search?query=${encodeURIComponent(query)}&limit=${limit}&offset=${offset}`;
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'accept': 'application/json',
+            'api-key': apiKey
+        }
+    })
+    .then(response => {
+        if (response.status === 200) {
+            return response.json();
+        } else if (response.status === 400) {
+            throw new Error('Invalid ID supplied');
+        } else if (response.status === 401) {
+            throw new Error('Unauthorized for API access. Missing or Invalid API Token provided');
+        } else if (response.status === 403) {
+            throw new Error('Not authorized to retrieve Sections for this Bible');
+        } else if (response.status === 404) {
+            throw new Error('Section not found');
+        } else {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+    })
+    .then(data => {
+        console.log(data);
+        if (data.data && data.data.verses) {
+            data.data.verses.forEach(verse => {
+                console.log(`Verse ID: ${verse.id}, Text: ${verse.text}, Reference: ${verse.reference}`);
+            });
+        }
+    })
+    .catch(error => console.error('Error searching verses:', error));
+}
+
+// Example usage of searchVerses
+searchVerses(selectedVersionId, 'love', 10, 0);
